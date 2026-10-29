@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import { unsplash } from "@/lib/utils";
+import Link from "next/link";
+import { formatDate, getPosts } from "@/lib/blog";
 import { Container } from "@/components/ui/container";
 import { SmartImage } from "@/components/ui/smart-image";
+import { ArrowSwap } from "@/components/ui/arrow-icon";
 import { PageHero } from "@/components/sections/page-hero";
 import { Cta } from "@/components/sections/cta";
 
@@ -11,50 +13,46 @@ export const metadata: Metadata = {
   alternates: { canonical: "/insights" },
 };
 
-const posts = [
-  {
-    tag: "WhatsApp",
-    title: "WhatsApp Business app or API: which one does your business need?",
-    image: unsplash("photo-1512428559087-560fa5ceab42", 900),
-  },
-  {
-    tag: "Automation",
-    title: "Five manual processes worth automating first",
-    image: unsplash("photo-1485827404703-89b55fcc595e", 900),
-  },
-  {
-    tag: "Software",
-    title: "What a CRM should actually do for a 20-person sales team",
-    image: unsplash("photo-1551288049-bebda4e38f71", 900),
-  },
-];
-
 export default function InsightsPage() {
+  const posts = getPosts();
+
   return (
     <>
       <PageHero eyebrow="Insights" title="Practical notes for" accent="growing businesses.">
         <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">
-          Our first articles are being written. Here&apos;s what&apos;s coming.
+          Guides on WhatsApp, automation and the systems that help Indian businesses grow.
         </p>
       </PageHero>
       <section className="border-t border-line py-16 md:py-20">
         <Container>
-          <ul className="grid gap-6 md:grid-cols-3">
+          <ul className="grid gap-x-6 gap-y-14 md:grid-cols-2">
             {posts.map((p) => (
-              <li key={p.title} className="group">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-surface">
-                  <SmartImage
-                    src={p.image}
-                    alt=""
-                    sizes="(min-width: 768px) 33vw, 100vw"
-                    className="duration-[1100ms] ease-out-expo group-hover:scale-105"
-                  />
-                  <span className="absolute top-3 left-3 rounded-full bg-background/85 px-3 py-1 text-xs font-medium text-foreground backdrop-blur">
-                    Publishing soon
+              <li key={p.slug}>
+                <Link href={`/insights/${p.slug}`} className="group block">
+                  <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-surface">
+                    <SmartImage
+                      src={p.image}
+                      alt={p.imageAlt}
+                      sizes="(min-width: 768px) 50vw, 100vw"
+                      className="duration-[1100ms] ease-out-expo group-hover:scale-105"
+                    />
+                  </div>
+                  <p className="mt-5 flex flex-wrap items-center gap-x-2 text-xs text-muted">
+                    <span className="font-semibold text-accent-ink">{p.tag}</span>
+                    <span aria-hidden>·</span>
+                    <time dateTime={p.date}>{formatDate(p.date)}</time>
+                    <span aria-hidden>·</span>
+                    <span>{p.readingMinutes} min read</span>
+                  </p>
+                  <h2 className="mt-3 text-[clamp(1.3rem,2.2vw,1.65rem)] font-medium leading-snug tracking-[-0.025em]">
+                    {p.title}
+                  </h2>
+                  <p className="mt-3 line-clamp-2 leading-relaxed text-muted">{p.description}</p>
+                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-medium">
+                    Read article
+                    <ArrowSwap className="size-4" />
                   </span>
-                </div>
-                <p className="mt-5 text-xs font-semibold text-accent-ink">{p.tag}</p>
-                <h2 className="mt-2 text-xl font-medium leading-snug tracking-[-0.02em]">{p.title}</h2>
+                </Link>
               </li>
             ))}
           </ul>
