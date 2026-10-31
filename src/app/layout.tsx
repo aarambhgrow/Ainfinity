@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import "@fontsource-variable/manrope";
 import "lenis/dist/lenis.css";
 import "./globals.css";
@@ -10,6 +11,8 @@ import { site } from "@/lib/site";
 import { siteSchema, siteUrl } from "@/lib/seo";
 import ChatWidget from "@/components/chat/ChatWidget";
 import { JsonLd } from "@/components/seo/json-ld";
+
+const GA_MEASUREMENT_ID = "G-NN6FEBPMMD";
 
 // Share images come from app/opengraph-image.tsx and app/twitter-image.tsx
 export const metadata: Metadata = {
@@ -65,6 +68,19 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <Footer />
         </Providers>
         <ChatWidget />
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', '${GA_MEASUREMENT_ID}');
+          `}
+        </Script>
       </body>
     </html>
   );
